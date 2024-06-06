@@ -2,7 +2,7 @@
   "name": "pm-api-tool",
   "version": "1.0.0",
   "description": "PlanMill Oauth2.0 based authentication API tool",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,5 +10,16 @@
     "OAuth2.0"
   ],
   "author": "Planmill oy <info@planmill.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "cors-anywhere": "^0.4.4",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "http-proxy-middleware": "^3.0.0",
+    "passport": "^0.7.0",
+    "passport-oauth2": "^1.8.0",
+    "request": "^2.88.2"
+  }
 }
