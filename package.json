@@ -1,0 +1,14 @@
+{
+  "name": "pm-api-tool",
+  "version": "1.0.0",
+  "description": "PlanMill Oauth2.0 based authentication API tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "OAuth2.0"
+  ],
+  "author": "Planmill oy <info@planmill.com>",
+  "license": "ISC"
+}
