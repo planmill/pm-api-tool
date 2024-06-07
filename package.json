@@ -19,6 +19,7 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "http-proxy-middleware": "^3.0.0",
+    "node-fetch": "^3.3.2",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
     "request": "^2.88.2"
