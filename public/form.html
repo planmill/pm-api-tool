@@ -12,14 +12,21 @@
         const userId = '50';
         const nonce = Math.random().toString(36).substr(2, 10); // Random nonce
         const timestamp = Date.now(); // Current timestamp
-        const signature = 'auCa5zS0fWQd6kpegtSIccK7dtBk/NUFiRxIUmVnKPc='; 
+        const signature = '1+B9PdSoXl9kEHCKC5YFaipwzjncq+mlzRomx2I9g+w='; 
         const authHeader = "user:" + userId + ";nonce:" + nonce + ";timestamp:" + timestamp + ";signature:" + signature
                
-        const name = document.getElementById('name').value;
+        //const name = document.getElementById('name').value;
+        const name = document.getElementById('apiUrl').value;
+        const apiUrl = $('#apiUrl').val();
+
+        if(!apiUrl) {
+            alert('Please enter the API URL.')
+        }
         
         // Make AJAX request with custom headers
         $.ajax({
-            url: 'http://localhost:3000/api/1.5/' + encodeURIComponent(name),
+            //url: 'http://localhost:3000/api/1.5/' + encodeURIComponent(name),
+            url: apiUrl,
             method: 'GET',
             dataType: 'json',
             headers: {
@@ -43,8 +50,9 @@
         <p>Welcome! You are authenticated.</p>
         <br> <br> <p>This tool help you to test and modify APIs</p>
         <form  style="display: flex;" id="oauthForm">
-            <label for="name">PM API endpoint:</label>
-            <input type="text" id="name" name="name" style="width: 80%; height: 24px;" required>
+            <label for="apiUrl">PM API endpoint:</label>
+            <input type="text" id="apiUrl" name="apiUrl" style="width: 80%; height: 24px;" required>
+            <!-- <input type="text" id="name" name="name" style="width: 80%; height: 24px;" required> -->
             &nbsp;
             <button type="submit" style="background-color:#1976D2 !important; color:#fff !important; width:8%;">Send</button>
         </form>
