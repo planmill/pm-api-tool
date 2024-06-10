@@ -2,10 +2,11 @@
   "name": "pm-api-tool",
   "version": "1.0.0",
   "description": "PlanMill Oauth2.0 based authentication API tool",
-  "main": "app.js",
+  "main": "api.js",
   "scripts": {
     "build": "node app.js",
-    "deploy": "npm run build & netlify deploy --prod"
+    "deploy": "npm run build & netlify deploy --prod",
+    "start": "netlify dev"
   },
   "keywords": [
     "OAuth2.0"
@@ -16,6 +17,7 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "cors-anywhere": "^0.4.4",
+    "crypto": "^1.0.1",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "http-proxy-middleware": "^3.0.0",

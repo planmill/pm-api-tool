@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>jQuery AJAX Form Example</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+    $('#oauthForm').on('submit', function(event) {
+        event.preventDefault(); 
+
+        // Generate authentication headers
+        const userId = '50';
+        const nonce = Math.random().toString(36).substr(2, 10); // Random nonce
+        const timestamp = Date.now(); // Current timestamp
+        const signature = 'auCa5zS0fWQd6kpegtSIccK7dtBk/NUFiRxIUmVnKPc='; 
+        const authHeader = "user:" + userId + ";nonce:" + nonce + ";timestamp:" + timestamp + ";signature:" + signature
+               
+        const name = document.getElementById('name').value;
+        
+        // Make AJAX request with custom headers
+        $.ajax({
+            url: 'http://localhost:3000/api/1.5/' + encodeURIComponent(name),
+            method: 'GET',
+            dataType: 'json',
+            headers: {
+            'X-Planmill-Auth' : authHeader,
+            'Authorization': 'Bearer'
+            },
+            success: function(data) {
+              $('#jsonOutput').text(JSON.stringify(data, null, 2));
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.error('AJAX error:', textStatus, errorThrown);
+            }
+        });
+        });
+    });
+</script>
+</head>
+<body style="text-align:center; margin-top:100px; padding:70px;padding: 0 0 70px 100px;">
+    <div class="card">
+        <h1>PlanMill API testing platform</h1>
+        <p>Welcome! You are authenticated.</p>
+        <br> <br> <p>This tool help you to test and modify APIs</p>
+        <form  style="display: flex;" id="oauthForm">
+            <label for="name">PM API endpoint:</label>
+            <input type="text" id="name" name="name" style="width: 80%; height: 24px;" required>
+            &nbsp;
+            <button type="submit" style="background-color:#1976D2 !important; color:#fff !important; width:8%;">Send</button>
+        </form>
+        <h2>JSON Output:</h2>
+        <pre id="jsonOutput" style="border:1px solid hashtag#ccc; padding:10px;"></pre>
+        <br>
+        <a href="/logout">Logout</a>
+        </div>
+    </body>
+</html>

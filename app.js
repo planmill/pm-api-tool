@@ -8,6 +8,8 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const app = express();
 const port = 3000;
 
+const crypto = require('crypto'); 
+
 // Use the cors middleware
  app.use(cors({
     origin: '*',
@@ -39,7 +41,7 @@ app.get('/api/1.5/products', async (req, res) => {
     }
    
     //use a secure authentication mechanism (Verify signature (dummy validation)
-    if (signature !== 'Ob3E/6dsRj+ii320sIZFyXGi4f0tqJ3LirI+MUNw3w8=') {
+    if (signature !== 'auCa5zS0fWQd6kpegtSIccK7dtBk/NUFiRxIUmVnKPc=') {
       return res.status(401).json({ error: 'Invalid signature.' });
     }
    
@@ -53,7 +55,6 @@ app.get('/api/1.5/products', async (req, res) => {
     }
    
    });
-   
 
 app.options('*', (req,res) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -188,14 +189,14 @@ app.get('/form', ensureAuthenticated, (req, res) => {
         $(document).ready(function() {
         $('#myForm').on('submit', function(event) {
             event.preventDefault(); 
-
-            // Generate authentication headers
+   
+            // Generate authentication headers            
             const userId = '50';
             const nonce = Math.random().toString(36).substr(2, 10); // Random nonce
             const timestamp = Date.now(); // Current timestamp
-            const signature = 'Ob3E/6dsRj+ii320sIZFyXGi4f0tqJ3LirI+MUNw3w8='; 
-            //const authHeader = "user:" + userId + ";nonce:" + nonce + ";timestamp:" + timestamp + ";signature:" + signature
-            const authHeader = "user:" + 50 + ";nonce:" + 'lqNlcgq' + ";timestamp:" + 1717749973 + ";signature:" + 'Ob3E/6dsRj+ii320sIZFyXGi4f0tqJ3LirI+MUNw3w8='
+            const signature = 'auCa5zS0fWQd6kpegtSIccK7dtBk/NUFiRxIUmVnKPc='; // not dynmic yet
+            const authHeader = "user:" + userId + ";nonce:" + nonce + ";timestamp:" + timestamp + ";signature:" + signature
+          // const authHeader = "user:" + 50 + ";nonce:" + 'qgrMfm7' + ";timestamp:" + 1718015301 + ";signature:" + 'auCa5zS0fWQd6kpegtSIccK7dtBk/NUFiRxIUmVnKPc='
             const name = document.getElementById('name').value;
             
             // Make AJAX request with custom headers
@@ -204,7 +205,8 @@ app.get('/form', ensureAuthenticated, (req, res) => {
                 method: 'GET',
                 dataType: 'json',
                 headers: {
-                'X-Planmill-Auth' : authHeader
+                'X-Planmill-Auth' : authHeader,
+                'Authorization': 'Bearer'
                 },
                 success: function(data) {
                 $('#jsonOutput').text(JSON.stringify(data, null, 2));
@@ -222,7 +224,7 @@ app.get('/form', ensureAuthenticated, (req, res) => {
             <h1>PlanMill API testing platform</h1>
             <p>Welcome! You are authenticated.</p>
             <br> <br> <p>This tool help you to test and modify APIs</p>
-            <form onsubmit="submitForm(event)" style="display: flex;" id="myForm">
+            <form style="display: flex;" id="myForm">
                 <label for="name">PM API endpoint:</label>
                 <input type="text" id="name" name="name" style="width: 80%; height: 24px;" required>
                 &nbsp;
