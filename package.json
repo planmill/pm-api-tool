@@ -2,7 +2,7 @@
   "name": "pm-api-tool",
   "version": "1.0.0",
   "description": "PlanMill Oauth2.0 based authentication API tool",
-  "main": "app.js",
+  "main": "api.js",
   "scripts": {
     "build": "node functions/api.js",
     "deploy": "npm run build & netlify deploy --prod",
