@@ -41,7 +41,7 @@ app.get('/api/1.5/products', async (req, res) => {
     }
    
     //use a secure authentication mechanism (Verify signature (dummy validation)
-    if (signature !== 'auCa5zS0fWQd6kpegtSIccK7dtBk/NUFiRxIUmVnKPc=') {
+    if (signature !== 'LhasLMKx+XoCGAQbwuRTXv7uGwMneuOtsNsDscgH2Lk=') {
       return res.status(401).json({ error: 'Invalid signature.' });
     }
    
@@ -97,7 +97,7 @@ app.get('/', (req, res) => {
         <html>
         <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
+         <style>
             .card {
                 box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
                 transition: 0.3s;
@@ -110,10 +110,10 @@ app.get('/', (req, res) => {
             }
         </style>
         </head>
-        <body style="text-align:center; margin-top:100px; padding 70px;padding: 0 0 70px 100px;">
+        <body style="text-align:center; margin-top:100px; padding:70px;padding: 0 0 70px 100px;">
         <div class="card">
         <h1 style="background-color:#1976D2 !important; color:#fff !important; margin:20px 0 40px 0px; height:76px; text-align:center; padding-top:30px; font-size:3rem;"">Enter PlanMill's OAuth2.0 Credentials</h1>
-            <form action="/set-credentials" method="post" style="height: 500px;">
+            <form  action="/set-credentials" method="post" style="height: 500px;" id="oauthForm">
                 <label for="clientID">Client ID:</label>
                 <input type="text" id="clientID" name="clientID" style="width:500px;height: 24px;" required>
                 <br><br>
@@ -181,62 +181,132 @@ app.get('/auth/callback',
 app.get('/form', ensureAuthenticated, (req, res) => {
  res.send(`
     <!DOCTYPE html>
-    <html>
-    <head>
-    <title>jQuery AJAX Form Example</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-        $('#myForm').on('submit', function(event) {
-            event.preventDefault(); 
-   
-            // Generate authentication headers            
-            const userId = '50';
-            const nonce = Math.random().toString(36).substr(2, 10); // Random nonce
-            const timestamp = Date.now(); // Current timestamp
-            const signature = 'auCa5zS0fWQd6kpegtSIccK7dtBk/NUFiRxIUmVnKPc='; // not dynmic yet
-            const authHeader = "user:" + userId + ";nonce:" + nonce + ";timestamp:" + timestamp + ";signature:" + signature
-          // const authHeader = "user:" + 50 + ";nonce:" + 'qgrMfm7' + ";timestamp:" + 1718015301 + ";signature:" + 'auCa5zS0fWQd6kpegtSIccK7dtBk/NUFiRxIUmVnKPc='
-            const name = document.getElementById('name').value;
-            
-            // Make AJAX request with custom headers
-            $.ajax({
-                url: 'http://localhost:3000/api/1.5/' + encodeURIComponent(name),
-                method: 'GET',
-                dataType: 'json',
-                headers: {
-                'X-Planmill-Auth' : authHeader,
-                'Authorization': 'Bearer'
-                },
-                success: function(data) {
-                $('#jsonOutput').text(JSON.stringify(data, null, 2));
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX error:', textStatus, errorThrown);
-                }
-            });
-            });
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jQuery AJAX API request form</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    #method {
+        font-size: medium;
+    }
+    .method-get {
+        color: #06780b;
+    }
+    .method-post {
+        color: #b5733f;
+    }
+    .method-put {
+        color: #065da2;
+    }
+    .method-delete {
+        color: #9e160c;
+    }
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        width: 100%;       
+        height: 80vh;
+        margin: 0 200px 0 -50px;
+    }
+    .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+</style>
+<script>
+    $(document).ready(function() {
+     $('#oauthForm').on('submit', function(event) {
+        event.preventDefault(); 
+
+        const clientId = $('#clientId').val();
+        const clientSecret = $('#clientSecret').val();
+        const credentials = clientId + ':' + clientSecret;
+        const encodedCredentials = btoa(credentials);
+        const tokenURL = $('#tokenURL').val();
+
+        //Generate authentication headers
+        const userId = '50';
+        const nonce = Math.random().toString(36).substr(2, 10); // Random nonce
+        const timestamp = Date.now(); // Current timestamp
+        const signature = 'LhasLMKx+XoCGAQbwuRTXv7uGwMneuOtsNsDscgH2Lk='; 
+        const authHeader = "user:" + userId + ";nonce:" + nonce + ";timestamp:" + timestamp + ";signature:" + signature
+               
+        
+        const name = document.getElementById('apiUrl').value;
+        const apiUrl = $('#apiUrl').val();
+        const method = $('#method').val();
+        const  headers = {            
+                       'Authorization': 'Bearer ' + encodedCredentials, 
+                      /* 'Authorization': 'Basic ' + encodedCredentials, */
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                      'X-Planmill-Auth' : authHeader
+                };
+        const data = 'grant_type = client_credentials';
+
+        if(!apiUrl) {
+            alert('Please enter the API URL.')
+        }
+        
+
+        // Make AJAX request with custom headers
+        $.ajax({
+            url: apiUrl,
+            method: method,
+            /* data: data, */
+           dataType: 'json',
+            headers: headers,
+            success: function(response) {
+                alert('Request successful')
+                console.log('response',response)
+              $('#jsonOutput').text(JSON.stringify(response, null, 2));
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.error('AJAX error:', textStatus, errorThrown);
+            }
         });
-    </script>
-    </head>
-    <body style="text-align:center; margin-top:100px; padding 70px;padding: 0 0 70px 100px;">
-        <div class="card">
-            <h1>PlanMill API testing platform</h1>
-            <p>Welcome! You are authenticated.</p>
-            <br> <br> <p>This tool help you to test and modify APIs</p>
-            <form style="display: flex;" id="myForm">
-                <label for="name">PM API endpoint:</label>
-                <input type="text" id="name" name="name" style="width: 80%; height: 24px;" required>
-                &nbsp;
-                <button type="submit" style="background-color:#1976D2 !important; color:#fff !important; width:8%;">Send</button>
-            </form>
-            <h2>JSON Output:</h2>
-            <pre id="jsonOutput" style="border:1px solid hashtag#ccc; padding:10px;"></pre>
-            <br>
+      });
+        const $method = $('#method');
+        function updateMethodStyle() {
+            const method = $method.val().toLowerCase();
+            $method.attr('class','method-' + method);
+        }
+
+        //Initialize style on page load
+        updateMethodStyle();
+
+        $method.change(updateMethodStyle);
+    });
+</script>
+</head>
+<body style="text-align:center; margin-top:100px; padding:70px;padding: 0 0 70px 100px;">
+    <div class="card">
+        <h1 style="padding-top: 10px;">PlanMill API TESTING TOOL</h1>
+        <p>Welcome! You are authenticated.</p>
+        <br> <br> <p>This tool help you to test and modify APIs</p>
+        <form  style="display: flex; padding-left:120px;" id="oauthForm">
+            <select id="method" name="method" required> 
+                 <option value="GET" class="method-get">GET</option>
+                 <option value="POST" class="method-post">POST</option>
+                 <option value="PUT" class="method-put">PUT</option>
+                 <option value="DELETE" class="method-delete">DELETE</option>
+            </select><br>
+           
+            <!-- <label for="apiUrl">PM API endpoint:</label> -->
+            <input type="text" id="apiUrl" name="apiUrl" style="width: 60%; height: 24px;" required>
+            <!-- <input type="text" id="name" name="name" style="width: 80%; height: 24px;" required> -->
+            &nbsp;
+            <button type="submit" style="background-color:#1976D2 !important; color:#fff !important; width:8%; border-color:#1976D2; font-size:medium;">Send</button>
+        </form>
+        <h2 style="text-align: left !important;padding-left: 120px;">JSON Response:</h2>
+        <pre id="jsonOutput" style="border:1px solid hashtag#ccc; padding:10px;"></pre>
+        <br>
+        <div style="text-align:right !important;margin-top: -400px !important;font-size: 20px;">
             <a href="/logout">Logout</a>
-            </div>
-        </body>
-    </html>
+        </div>       
+    </div>
+    </body>
+</html>
  `);
 });
 

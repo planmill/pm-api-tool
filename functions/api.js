@@ -29,7 +29,7 @@ app.options('*', (req,res) => {
 //Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(session({ secret: 'API-ACCESS-KEY', resave: false, saveUninitialized: false }));
+app.use(session({ secret: 'm2d@^07;12NDrO6 c5pP*k-zG:]lT&SfWQdiZ1cwU+[dKkQYp?|,`kVse{.r4#.J', resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
