@@ -163,7 +163,7 @@ app.get('/form', (req, res) => {
     <br> <br> <p>This tool help you to test and modify APIs</p>
     <form style="display: flex; padding-left:120px;" id="api-form">
         <select id="method" name="method">
-            <option value="GET" >GET</option>
+            <option value="GET">GET</option>
             <option value="POST">POST</option>
             <option value="PUT">PUT</option>
             <option value="DELETE">DELETE</option>
