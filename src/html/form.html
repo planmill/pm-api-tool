@@ -1,10 +1,10 @@
 <!DOCTYPE html>
- <html lang="en">
- <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Form Page</title>
- <style>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OAuth Login</title>
+<style>
     #method {
         font-size: medium;
     }
@@ -31,56 +31,24 @@
       box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     }
 </style>
- </head>
-<body style="text-align:center; margin-top:100px; padding:70px;padding: 0 0 70px 100px;">
-  <div class="card">
-    <h1 style="padding-top: 10px;">PlanMill API TESTING TOOL</h1>
-    <p>Welcome! You are authenticated.</p>
-    <br> <br> <p>This tool help you to test and modify APIs</p>
-    <form style="display: flex; padding-left:120px;" id="api-form">
-
-      <select id="method" name="method">
-        <option value="GET" >GET</option>
-        <option value="POST">POST</option>
-        <option value="PUT">PUT</option>
-        <option value="DELETE">DELETE</option>
-      </select><br>
-      <input  type="text" id="api_endpoint" name="api_endpoint" style="width: 60%; height: 24px;" required> 
-      &nbsp;
-      <button type="submit" style="background-color:#1976D2 !important; color:#fff !important; width:8%; border-color:#1976D2; font-size:medium;">Send</button>
-    </form>
-    <h2 style="text-align: left !important;padding-left: 120px;">JSON Response:</h2>
-
-    <div style="text-align:right !important;margin-top: -350px !important;font-size: 20px;">
-        <a href="/logout">Logout</a>
-    </div>       
-    <div id="profile"></div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script >
-        $(document).ready(function() {
-    $('#api-form').on('submit', function(e) {
-        e.preventDefault();
-        const apiEndpoint = $('#api_endpoint').val();
-        const method = $('#method').val();
-       // url: `/.netlify/functions/fetch-data?url=${encodeURIComponent(apiEndpoint)}`,
-        $.ajax({
-        /* url: '/api/1.5', */
-        url: '/.netlify/functions/fetch-data',
-        method: 'GET',
-        data: { url: apiEndpoint, method: method },
-        success: function(data) {
-            console.log('API Data:', data);
-            $('#profile').html('<pre style="padding-top: 300px;text-align: left;padding-left: 150px;">' + JSON.stringify(data, null, 2) + '</pre>');
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Error fetching API data:', textStatus, errorThrown);
-            $('#profile').html('<p>Error fetching data. Please check the endpoint and try again.</p>');
-        }
-        });
-     });
-});
-
-    </script>
-  </div>
- </body>
- </html>
+</head>
+<body>
+    <div class="card">
+        <h1>OAuth Login</h1>
+        <form action="/.netlify/functions/auth-login" method="POST">
+            <div class="form-group">
+                <label for="client_id">Client ID:</label>
+                <input type="text" name="client_id" required>
+            </div>
+            <div class="form-group">
+                <label for="client_secret">Client Secret (1 hour validity):</label>
+                <input type="password" name="client_secret" required>
+                <small>Please enter the current valid client secret</small>
+            </div>
+            <input type="hidden" name="authorization_url" value="https://authorization-server.com/auth">
+            <input type="hidden" name="callback_url" value="https://your-site.com/.netlify/functions/auth-callback">
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>

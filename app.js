@@ -28,49 +28,51 @@ passport.deserializeUser((obj, cb) => {
  cb(null, obj);
 });
 
+app.use(express.static('public'));
+
 // Serve the HTML form where users can input OAuth2.0 credentials
 app.get('/', (req, res) => {
  res.send(`
  <!DOCTYPE html>
  <html lang="en">
  <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <style>
-    .card {
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        transition: 0.3s;
-        width: 80%;
-        align-content: center;
-        padding: 70px;
-    }
-    .card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-    }
-    .textFieldStyle {
-        width:500px;
-        height: 24px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanMill OAuth2.0</title>
+    <link rel="stylesheet" href="/styles/main.css">
  </head>
- <body style="text-align:center; margin-top:100px; padding:70px;padding: 0 0 70px 100px;">
+ <body>
     <div class="card">
-    <h1 style="background-color:#1976D2 !important; color:#fff !important; margin:20px 0 40px 0px; height:76px; text-align:center; padding-top:30px; font-size:3rem;"">Enter PlanMill's OAuth2.0 Credentials</h1>
-    <form action="/auth/login" method="post" style="height: 500px;">
-        <label for="client_id">Client ID:</label>
-        <input type="text" id="client_id" name="client_id" class="textFieldStyle" required><br><br>
-        <label for="client_secret">Client Secret:</label>
-        <input type="password" id="client_secret" name="client_secret" class="textFieldStyle" required><br><br>
-        <label for="authorization_url">Authorization URL:</label>
-        <input type="text" id="authorization_url" name="authorization_url" class="textFieldStyle" required><br><br>
-        <label for="token_url">Token URL:</label>
-        <input type="text" id="token_url" name="token_url" class="textFieldStyle" required><br><br>
-        <label for="callback_url">Callback URL:</label>
-        <input type="text" id="callback_url" name="callback_url" class="textFieldStyle" required><br><br>
-        <button type="submit" style="background-color:green;width: 100px;height: 30px;border-color: green;color: white;">Login</button>
-    </form>
+        <div class="header">
+            <h1>Enter PlanMill's OAuth2.0 Credentials</h1>
+        </div>
+        <div class="form-container">
+            <form action="/auth/login" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="client_id">Client ID</label>
+                    <input class="form-input" type="text" id="client_id" name="client_id" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="client_secret">Client Secret</label>
+                    <input class="form-input" type="password" id="client_secret" name="client_secret" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="authorization_url">Authorization URL</label>
+                    <input class="form-input" type="text" id="authorization_url" name="authorization_url" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="token_url">Token URL</label>
+                    <input class="form-input" type="text" id="token_url" name="token_url" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="callback_url">Callback URL</label>
+                    <input class="form-input" type="text" id="callback_url" name="callback_url" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
     </div>
-  </body>
+ </body>
  </html>
  `);
 });
@@ -119,99 +121,81 @@ app.get('/auth/callback', (req, res, next) => {
 // Serve after successful authentication
 app.get('/form', (req, res) => {
  if (!req.session.accessToken) {
- return res.redirect('/');
+    return res.redirect('/');
  }
  res.send(`
  <!DOCTYPE html>
  <html lang="en">
  <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Form Page</title>
- <style>
-    #method {
-        font-size: medium;
-    }
-    .method-get {
-        color: #06780b;
-    }
-    .method-post {
-        color: #b5733f;
-    }
-    .method-put {
-        color: #065da2;
-    }
-    .method-delete {
-        color: #9e160c;
-    }
-    .card {
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        transition: 0.3s;
-        width: 100%;       
-        height: 100%;
-        margin: 0 200px 0 -50px;
-    }
-    .card:hover {
-      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-    }
-</style>
-</head>
-<body style="text-align:center; margin-top:100px; padding:70px;padding: 0 0 70px 100px;">
- <div class="card">
-    <h1 style="padding-top: 10px;">PlanMill API TESTING TOOL</h1>
-    <p>Welcome! You are authenticated.</p>
-    <br> <br> <p>This tool help you to test and modify APIs</p>
-    <form style="display: flex; padding-left:120px;" id="api-form">
-        <select id="method" name="method">
-            <option value="GET">GET</option>
-            <option value="POST">POST</option>
-            <option value="PUT">PUT</option>
-            <option value="DELETE">DELETE</option>
-        </select><br>
-        <input  type="text" id="api_endpoint" name="api_endpoint" style="width: 60%; height: 24px;" required> 
-        &nbsp;
-        <button type="submit" style="background-color:#1976D2 !important; color:#fff !important; width:8%; border-color:#1976D2; font-size:medium;">Send</button>
-        </form>
-    <h2 style="text-align: left !important;padding-left: 120px;">JSON Response:</h2>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanMill API Testing Tool</title>
+    <link rel="stylesheet" href="/styles/main.css">
+ </head>
+ <body>
+    <div class="card">
+        <div class="header">
+            <h1>PlanMill API Testing Tool</h1>
+        </div>
+        <div class="text-right">
+            <a href="/logout" class="btn">Logout</a>
+        </div>
+        <div class="form-container">
+            <div class="welcome-message">
+                <h2>Welcome to PlanMill API Testing Tool!</h2>
+                <p>You are now authenticated and can begin testing API endpoints. Use the form below to make API requests.</p>
+            </div>
+            <form id="api-form" class="api-form">
+                <select id="method" name="method" class="method-select method-get">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+                <input type="text" id="api_endpoint" name="api_endpoint" class="form-input" placeholder="Enter API endpoint" required>
+                <button type="submit" class="btn">Send</button>
+            </form>
+            <div class="response-container">
+                <h2>JSON Response:</h2>
+                <div id="profile"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#api-form').on('submit', function(e) {
+                e.preventDefault();
+                const apiEndpoint = $('#api_endpoint').val();
+                const method = $('#method').val();
+                $.ajax({
+                url: '/api/1.5',
+                method: 'GET',
+                data: { url: apiEndpoint, method: method },
+                success: function(data) {
+                console.log('API Data:', data);
+                    $('#profile').html('<pre style="padding-top: 20px;text-align: left;">' + JSON.stringify(data, null, 2) + '</pre>');
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error fetching API data:', textStatus, errorThrown);
+                    $('#profile').html('<p>Error fetching data. Please check the endpoint and try again.</p>');
+                }
+            });
+           });
+            const $method = $('#method');
+            function updateMethodStyle() {
+                const method = $method.val().toLowerCase();
+                $method.removeClass('method-get method-post method-put method-delete')
+                      .addClass('method-' + method);
+            }
 
-    <div style="text-align:right !important;margin-top: -350px !important;font-size: 20px;">
-        <a href="/logout">Logout</a>
-    </div>       
- <div id="profile"></div>
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
- <script>
- $(document).ready(function() {
-    $('#api-form').on('submit', function(e) {
-        e.preventDefault();
-        const apiEndpoint = $('#api_endpoint').val();
-        const method = $('#method').val();
-        $.ajax({
-        url: '/api/1.5',
-        method: 'GET',
-        data: { url: apiEndpoint, method: method },
-        success: function(data) {
-        console.log('API Data:', data);
-            $('#profile').html('<pre style="padding-top: 300px;text-align: left;padding-left: 150px;">' + JSON.stringify(data, null, 2) + '</pre>');
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Error fetching API data:', textStatus, errorThrown);
-            $('#profile').html('<p>Error fetching data. Please check the endpoint and try again.</p>');
-        }
-    });
-   });
-    const $method = $('#method');
-    function updateMethodStyle() {
-        const method = $method.val().toLowerCase();
-        $method.attr('class','method-' + method);
-    }
+            // Initialize style on page load
+            updateMethodStyle();
 
-    //Initialize style on page load
-    updateMethodStyle();
-
-    $method.change(updateMethodStyle);
- });
- </script>
- </div>
+            // Update style when method changes
+            $method.on('change', updateMethodStyle);
+        });
+    </script>
  </body>
  </html>
  `);

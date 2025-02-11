@@ -9,9 +9,16 @@ exports.handler = async (event) => {
     const authorizationRedirectUrl = `${authorization_url}?client_id=${client_id}&redirect_uri=${callback_url}&response_type=code`;
    
     return {
-    statusCode: 302,
-    headers: {
-    Location: authorizationRedirectUrl
-    }
+        statusCode: 302,
+        headers: {
+            Location: authorizationRedirectUrl,
+            // Store these values in cookies for the callback
+            'Set-Cookie': [
+                `client_id=${client_id}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+                `client_secret=${client_secret}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+                `token_url=${token_url}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+                `callback_url=${callback_url}; Path=/; HttpOnly; Secure; SameSite=Lax`
+            ].join(', ')
+        }
     };
-   };
+};
