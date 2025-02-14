@@ -1,8 +1,0 @@
-[build]
-    publish = "src/html"
-    functions = "functions"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
