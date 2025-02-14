@@ -20,13 +20,15 @@
                 <p>You are now authenticated and can begin testing API endpoints. Use the form below to make API requests.</p>
             </div>
             <form id="api-form" class="api-form">
-                <select id="method" name="method" class="method-select method-get">
-                    <option value="GET">GET</option>
-                    <option value="POST">POST</option>
-                    <option value="PUT">PUT</option>
-                    <option value="DELETE">DELETE</option>
-                </select>
-                <input type="text" id="api_endpoint" name="api_endpoint" class="form-input" placeholder="Enter API endpoint" required>
+                <button type="submit" id="method" name="method" class="method-btn method-get">GET</button>
+                <input list="api_endpoints" id="api_endpoint" name="api_endpoint" class="form-input" placeholder="Choose or type an endpoint">
+                <datalist id="api_endpoints" >
+                    <option value="projects">
+                    <option value="products">
+                    <option value="contacts">
+                    <option value="accounts">
+                    <option value="users">
+                </datalist>
                 <button type="submit" class="btn">Send</button>
             </form>
             <div class="response-container">
@@ -47,27 +49,14 @@
                 method: 'GET',
                 data: { url: apiEndpoint, method: method },
                 success: function(data) {
-                console.log('API Data:', data);
-                    $('#profile').html('<pre style="padding-top: 20px;text-align: left;">' + JSON.stringify(data, null, 2) + '</pre>');
+                  $('#profile').html('<pre style="padding-top: 20px;text-align: left;">' + JSON.stringify(data, null, 2) + '</pre>');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('Error fetching API data:', textStatus, errorThrown);
-                    $('#profile').html('<p>Error fetching data. Please check the endpoint and try again.</p>');
+                   //console.error('Error', textStatus, errorThrown,jqXHR);
+                  $('#profile').html('<pre style="color: red;">' + jqXHR.responseJSON.error + '.' + 'Please check the endpoint and try again.' + '</pre>');
                 }
             });
            });
-            const $method = $('#method');
-            function updateMethodStyle() {
-                const method = $method.val().toLowerCase();
-                $method.removeClass('method-get method-post method-put method-delete')
-                      .addClass('method-' + method);
-            }
-
-            // Initialize style on page load
-            updateMethodStyle();
-
-            // Update style when method changes
-            $method.on('change', updateMethodStyle);
         });
     </script>
  </body>
