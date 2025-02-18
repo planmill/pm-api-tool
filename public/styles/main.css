@@ -46,10 +46,6 @@ body {
     margin: 0;
 }
 
-.form-container {
-    padding: 1rem 0;
-}
-
 .api-form {
     display: flex;
     gap: 0.5rem;
@@ -152,6 +148,7 @@ body {
 .form-container {
     max-width: 800px;
     margin: 0 auto;
+    padding: 5rem 0;
 }
 
 .form-group {
