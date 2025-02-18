@@ -42,21 +42,32 @@
         $(document).ready(function() {
             $('#api-form').on('submit', function(e) {
                 e.preventDefault();
+
                 const apiEndpoint = $('#api_endpoint').val();
                 const method = $('#method').val();
-                $.ajax({
-                url: '/api/1.5',
-                method: 'GET',
-                data: { url: apiEndpoint, method: method },
-                success: function(data) {
-                  $('#profile').html('<pre style="padding-top: 20px;text-align: left;">' + JSON.stringify(data, null, 2) + '</pre>');
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                   //console.error('Error', textStatus, errorThrown,jqXHR);
-                  $('#profile').html('<pre style="color: red;">' + jqXHR.responseJSON.error + '.' + 'Please check the endpoint and try again.' + '</pre>');
+    
+                // Validate the inputs before making the request
+                if (!apiEndpoint) {
+                    $('#profile').html('<pre style="color: red;">Please provide API endpoint.</pre>');
+                    return;
                 }
+    
+                const endpointPath = `/api/1.5?url=${apiEndpoint}`;
+    
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: endpointPath,
+                    method: 'GET',
+                    success: function(data) {
+                        // On success, format and display the response JSON
+                        $('#profile').html('<pre style="padding-top: 20px; text-align: left;">' + JSON.stringify(data, null, 2) + '</pre>');
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // On error, display an error message
+                        $('#profile').html('<pre style="color: red;">' + jqXHR.responseJSON.error + '. Please check the endpoint and try again.</pre>');
+                    }
+                });
             });
-           });
         });
     </script>
  </body>
