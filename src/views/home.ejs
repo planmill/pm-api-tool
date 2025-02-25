@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>PlanMill OAuth2.0</title>
+   <link rel="stylesheet" href="/styles/main.css">
+   <script>
+    function toggleAuthFields() {
+        const authType = document.querySelector('input[name="auth_type"]:checked').value;
+        document.getElementById('client-secret-group').style.display = authType === 'client_credentials' ? 'block' : 'none';
+        document.getElementById('redirect-uri-group').style.display = authType === 'authorization_code' ? 'block' : 'none';
+    }
+</script>
+</head>
+<body>
+   <div class="card">
+       <div class="header">
+           <h1>Enter PlanMill's OAuth2.0 Credentials</h1>
+       </div>
+       <div class="form-container">
+           <form action="/auth/login" method="post">
+                <div class="form-group">
+                    <label class="form-label">Choose Authentication Method</label><br>
+                    <input type="radio" id="client_credentials" name="auth_type" value="client_credentials" checked onchange="toggleAuthFields()">
+                    <label for="client_credentials">Client Credentials</label>
+                    <input type="radio" id="authorization_code" name="auth_type" value="authorization_code" onchange="toggleAuthFields()">
+                    <label for="authorization_code">Authorization Code</label>
+                </div>
+
+               <div class="form-group">
+                   <label class="form-label" for="client_id">Client ID</label>
+                   <input class="form-input" type="text" id="client_id" name="client_id" required>
+               </div>
+               <div class="form-group">
+                   <label class="form-label" for="client_secret">Client Secret</label>
+                   <input class="form-input" type="password" id="client_secret" name="client_secret" required>
+               </div>
+
+               <div class="form-group">
+                   <label class="form-label" for="callback_url">Callback URL</label>
+                   <input class="form-input" type="text" id="callback_url" name="callback_url" required>
+               </div>
+               <div class="form-group">
+                <label for="instance" for="instance">Instance:</label>
+                <input class="form-input" type="text" id="instance" name="instance" placeholder="e.g. demo" required>
+            </div>
+               
+               <button type="submit" class="btn">Login</button>
+           </form>
+       </div>
+   </div>
+</body>
+</html>

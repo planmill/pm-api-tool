@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanMill API Testing Tool</title>
+    <link rel="stylesheet" href="/styles/main.css">
+ </head>
+ <body>
+    <div class="card">
+        <div class="header">
+            <h1>PlanMill API Testing Tool</h1>
+        </div>
+        <div class="text-right">
+            <a href="/logout" class="btn">Logout</a>
+        </div>
+        <div class="form-container">
+            <div class="welcome-message">
+                <h2>Welcome to PlanMill API Testing Tool!</h2>
+                <p>You are now authenticated and can begin testing API endpoints. Use the form below to make API requests.</p>
+            </div>
+            <form id="api-form" class="api-form">
+                <button type="submit" id="method" name="method" class="method-btn method-get">GET</button>
+                <input list="api_endpoints" id="api_endpoint" name="api_endpoint" class="form-input" placeholder="Choose or type an endpoint">
+                <datalist id="api_endpoints" >
+                    <option value="projects">
+                    <option value="products">
+                    <option value="contacts">
+                    <option value="accounts">
+                    <option value="users">
+                </datalist>
+                <button type="submit" class="btn">Send</button>
+            </form>
+            <div class="response-container">
+                <h2>JSON Response:</h2>
+                <div id="profile"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#api-form').on('submit', function(e) {
+                e.preventDefault();
+
+                const apiEndpoint = $('#api_endpoint').val();
+                const method = $('#method').val();
+    
+                // Validate the inputs before making the request
+                if (!apiEndpoint) {
+                    $('#profile').html('<pre style="color: red;">Please provide API endpoint.</pre>');
+                    return;
+                }
+    
+                const endpointPath = `/api/1.5?url=${apiEndpoint}`;
+    
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: endpointPath,
+                    method: 'GET',
+                    success: function(data) {
+                        // On success, format and display the response JSON
+                        $('#profile').html('<pre style="padding-top: 20px; text-align: left;">' + JSON.stringify(data, null, 2) + '</pre>');
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // On error, display an error message
+                        $('#profile').html('<pre style="color: red;">' + jqXHR.responseJSON.error + '. Please check the endpoint and try again.</pre>');
+                    }
+                });
+            });
+        });
+    </script>
+ </body>
+ </html>
